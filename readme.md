@@ -6,12 +6,18 @@ I decided as an experiment to build one myself.
 
 ## TODO
 - [ ] OrderBy
-- [ ] @Table
-- [ ] ReplaceTable
-- [ ] Enum/JsonField Serializer
+- [x] @Table
+- [ ] Truncate
 
+
+### Migration
+- [ ] ReplaceTable
+
+### Mapping
+- [ ] Enum/JsonField Serializer
 - [ ] Remove Maps
   - [ ] Rename fields with annotations
 
+### Complex Operations
 - [ ] Joins
 - [ ] Relationships
