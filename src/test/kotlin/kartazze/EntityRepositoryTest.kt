@@ -7,10 +7,8 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.vikkio.kartazze.ColumnMap
 import org.vikkio.kartazze.DbHelper
-import org.vikkio.kartazze.Entity
-import org.vikkio.kartazze.annotations.Id
-import org.vikkio.kartazze.annotations.Ignore
-import org.vikkio.kartazze.annotations.Unique
+import org.vikkio.kartazze.EntityRepository
+import org.vikkio.kartazze.annotations.*
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
@@ -18,6 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@Table(name = "users")
 data class User(
     @Id
     val id: String,
@@ -28,11 +27,7 @@ data class User(
     val stuff: Boolean = false
 )
 
-class UserEntity(connection: Connection) : Entity<User, String>(connection) {
-    override val table: String = "user"
-    override val primaryKey: String = "id"
-
-
+class UserEntity(connection: Connection) : EntityRepository<User, String>(connection, User::class) {
     override fun map(rs: ResultSet) = User(
         id = rs.getString("id"),
         name = rs.getString("name"),
@@ -48,7 +43,7 @@ class UserEntity(connection: Connection) : Entity<User, String>(connection) {
     }
 }
 
-class EntityTest {
+class EntityRepositoryTest {
     private val testConnection: Connection = DriverManager.getConnection("jdbc:sqlite::memory:")
     private val userE = UserEntity(testConnection)
 

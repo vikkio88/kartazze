@@ -3,7 +3,9 @@ package org.vikkio.kartazze
 
 import org.vikkio.kartazze.annotations.Id
 import org.vikkio.kartazze.annotations.Ignore
+import org.vikkio.kartazze.annotations.Table
 import org.vikkio.kartazze.annotations.Unique
+import java.io.InvalidClassException
 import java.sql.Connection
 import java.sql.SQLException
 import kotlin.reflect.KClass
@@ -12,7 +14,7 @@ import kotlin.reflect.full.memberProperties
 
 object DbHelper {
     fun crateTableIfNotExists(connection: Connection, entityClass: KClass<out Any>): Boolean {
-        val tableName = entityClass.simpleName?.lowercase() ?: return false
+        val tableName = getTableName(entityClass)
         val columns =
             entityClass.memberProperties.filter { it.findAnnotation<Ignore>() == null }.joinToString(", ") { property ->
                 val columnName = property.name
@@ -52,7 +54,7 @@ object DbHelper {
     }
 
     fun dropTable(connection: Connection, entityClass: KClass<out Any>): Boolean {
-        val tableName = entityClass.simpleName?.lowercase() ?: return false
+        val tableName = getTableName(entityClass)
         return try {
             val stm = connection.createStatement()
             stm.execute("DROP TABLE $tableName")
@@ -61,5 +63,11 @@ object DbHelper {
             println("An error occurred while dropping the table: ${e.message}")
             false
         }
+    }
+
+    private fun getTableName(entityClass: KClass<out Any>): String {
+        val tableName = entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase()
+        ?: throw InvalidClassException("Class ${entityClass.simpleName} does not have correct Table configuration")
+        return tableName
     }
 }

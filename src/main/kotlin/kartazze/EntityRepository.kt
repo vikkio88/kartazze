@@ -1,16 +1,29 @@
 package org.vikkio.kartazze
 
+import org.vikkio.kartazze.annotations.Id
+import org.vikkio.kartazze.annotations.Table
+import java.io.InvalidClassException
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
+import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.memberProperties
 
 typealias ColumnMap = Map<String, (Int, PreparedStatement) -> Unit>
 
 
-abstract class Entity<T, Id>(private val connection: Connection) {
-    abstract val table: String
-    abstract val primaryKey: String
+abstract class EntityRepository<EntityType : Any, IdType>(private val connection: Connection, private val entityClass: KClass<EntityType>) {
+    private val table: String by lazy {
+        entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase()
+        ?: throw InvalidClassException("Class ${entityClass.simpleName} does not have correct Table configuration")
+    }
+
+    private val primaryKey: String by lazy {
+        val keyProperty = entityClass.memberProperties.find { it.findAnnotation<Id>() != null }
+        keyProperty?.name ?: "id"
+    }
 
     private fun selectQ(columns: String = "*"): String {
         return "select $columns from $table"
@@ -29,7 +42,7 @@ abstract class Entity<T, Id>(private val connection: Connection) {
     }
 
 
-    fun findOne(id: Id): T? {
+    fun findOne(id: IdType): EntityType? {
         val stm = connection.prepareStatement("${selectQ()} where $primaryKey = ?")
         when (id) {
             is String -> stm.setString(1, id)
@@ -43,9 +56,9 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         return if (result.next()) map(result) else null
     }
 
-    fun all(): Iterable<T> {
+    fun all(): Iterable<EntityType> {
         val stm = connection.createStatement()
-        val result = mutableListOf<T>()
+        val result = mutableListOf<EntityType>()
 
         val rs = stm.executeQuery(selectQ())
         while (rs.next()) {
@@ -55,7 +68,7 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         return result
     }
 
-    fun filter(whereClause: String, vararg params: Any, pageSize: Int = 100, pageNumber: Int = 1): Iterable<T> {
+    fun filter(whereClause: String, vararg params: Any, pageSize: Int = 100, pageNumber: Int = 1): Iterable<EntityType> {
         val offset = (pageNumber - 1) * pageSize
         val sql = "${selectQ()} WHERE $whereClause LIMIT ? OFFSET ?"
         val stm = connection.prepareStatement(sql)
@@ -67,7 +80,7 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         stm.setInt(params.size + 1, pageSize)
         stm.setInt(params.size + 2, offset)
 
-        val result = mutableListOf<T>()
+        val result = mutableListOf<EntityType>()
         val rs = stm.executeQuery()
         while (rs.next()) {
             result.add(map(rs))
@@ -76,7 +89,7 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         return result
     }
 
-    fun create(entity: T): Boolean {
+    fun create(entity: EntityType): Boolean {
         val mapped = map(entity)
         val stm = connection.prepareStatement(insertQ(mapped.keys))
         mapped.values.forEachIndexed { i, bind -> bind(i + 1, stm) }
@@ -88,7 +101,7 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         }
     }
 
-    fun update(entity: T, id: Id): Boolean {
+    fun update(entity: EntityType, id: IdType): Boolean {
         val mapped = map(entity)
         val stm = connection.prepareStatement("${updateQ(mapped.keys)} where $primaryKey = '$id'")
         mapped.values.forEachIndexed { i, bind -> bind(i + 1, stm) }
@@ -100,7 +113,7 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         }
     }
 
-    fun delete(id: Id): Boolean {
+    fun delete(id: IdType): Boolean {
         val stm = connection.prepareStatement("${deleteQ()} where $primaryKey = ?")
         when (id) {
             is String -> stm.setString(1, id)
@@ -128,6 +141,6 @@ abstract class Entity<T, Id>(private val connection: Connection) {
         }
     }
 
-    abstract fun map(rs: ResultSet): T
-    abstract fun map(obj: T): ColumnMap
+    abstract fun map(rs: ResultSet): EntityType
+    abstract fun map(obj: EntityType): ColumnMap
 }
