@@ -14,7 +14,7 @@ import kotlin.reflect.full.memberProperties
 typealias ColumnMap = Map<String, (Int, PreparedStatement) -> Unit>
 
 
-abstract class EntityRepository<EntityType : Any, IdType>(private val connection: Connection, private val entityClass: KClass<EntityType>) {
+abstract class Repository<EntityType : Any, IdType>(private val connection: Connection, private val entityClass: KClass<EntityType>) {
     private val table: String by lazy {
         entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase()
         ?: throw InvalidClassException("Class ${entityClass.simpleName} does not have correct Table configuration")

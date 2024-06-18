@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.vikkio.kartazze.ColumnMap
 import org.vikkio.kartazze.DbHelper
-import org.vikkio.kartazze.EntityRepository
+import org.vikkio.kartazze.Repository
 import org.vikkio.kartazze.annotations.*
 import java.sql.Connection
 import java.sql.DriverManager
@@ -27,7 +27,7 @@ data class User(
     val stuff: Boolean = false
 )
 
-class UserEntity(connection: Connection) : EntityRepository<User, String>(connection, User::class) {
+class UserEntity(connection: Connection) : Repository<User, String>(connection, User::class) {
     override fun map(rs: ResultSet) = User(
         id = rs.getString("id"),
         name = rs.getString("name"),
@@ -43,7 +43,7 @@ class UserEntity(connection: Connection) : EntityRepository<User, String>(connec
     }
 }
 
-class EntityRepositoryTest {
+class RepositoryTest {
     private val testConnection: Connection = DriverManager.getConnection("jdbc:sqlite::memory:")
     private val userE = UserEntity(testConnection)
 

@@ -15,7 +15,7 @@ data class User(
     val points: Int
 )
 
-class UserRepo(connection: Connection) : EntityRepository<User, String>(connection, User::class) {
+class UserRepo(connection: Connection) : Repository<User, String>(connection, User::class) {
     override fun map(rs: ResultSet) = User(
         id = rs.getString("id"),
         name = rs.getString("name"),
