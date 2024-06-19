@@ -1,10 +1,10 @@
-package org.vikkio.kartazze
+package org.vikkio.org.vikkio.kartazze
 
 
-import org.vikkio.kartazze.annotations.Id
-import org.vikkio.kartazze.annotations.Ignore
-import org.vikkio.kartazze.annotations.Table
-import org.vikkio.kartazze.annotations.Unique
+import org.vikkio.org.vikkio.kartazze.annotations.Id
+import org.vikkio.org.vikkio.kartazze.annotations.Ignore
+import org.vikkio.org.vikkio.kartazze.annotations.Table
+import org.vikkio.org.vikkio.kartazze.annotations.Unique
 import java.io.InvalidClassException
 import java.sql.Connection
 import java.sql.SQLException
@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-object DbHelper {
+object SchemeHelper {
     fun crateTableIfNotExists(connection: Connection, entityClass: KClass<out Any>): Boolean {
         val tableName = getTableName(entityClass)
         val columns =

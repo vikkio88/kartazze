@@ -1,26 +1,18 @@
 package kartazze
 
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
-import org.vikkio.kartazze.DbHelper
-import org.vikkio.kartazze.annotations.*
+import org.vikkio.org.vikkio.kartazze.SchemeHelper
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
 
-data class User2(
-    @Id
-    val id: Int,
-    @Ignore
-    val ciao: String
-)
-
 
 const val testFileName = "helpertest.db"
 
-class DbHelperTest {
+class SchemeHelperTest {
 
     @Test
     fun crateAndDropTables() {
@@ -28,12 +20,11 @@ class DbHelperTest {
             assertFalse(tableExists(connection, "user2"))
         }
         DriverManager.getConnection("jdbc:sqlite:$testFileName").use { connection ->
-            assertTrue(DbHelper.crateTableIfNotExists(connection, User2::class))
+            assertTrue(SchemeHelper.crateTableIfNotExists(connection, User2::class))
             assertTrue(tableExists(connection, "user2"))
         }
-
         DriverManager.getConnection("jdbc:sqlite:$testFileName").use { connection ->
-            assertTrue(DbHelper.dropTable(connection, User2::class))
+            assertTrue(SchemeHelper.dropTable(connection, User2::class))
             assertFalse(tableExists(connection, "user2"))
         }
 
