@@ -1,4 +1,4 @@
-package kartazze
+package org.vikkio
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertFalse

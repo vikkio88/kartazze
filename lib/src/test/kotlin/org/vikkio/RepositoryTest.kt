@@ -1,4 +1,4 @@
-package kartazze
+package org.vikkio
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
@@ -7,7 +7,6 @@ import org.vikkio.kartazze.SchemeHelper
 import org.vikkio.kartazze.filters
 import java.sql.Connection
 import java.sql.DriverManager
-import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 

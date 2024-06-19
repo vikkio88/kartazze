@@ -1,4 +1,4 @@
-package kartazze
+package org.vikkio
 
 import org.vikkio.kartazze.*
 import org.vikkio.kartazze.annotations.*
