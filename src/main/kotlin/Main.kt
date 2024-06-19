@@ -1,7 +1,11 @@
 package org.vikkio
 
-import org.vikkio.kartazze.*
-import org.vikkio.kartazze.annotations.*
+import org.vikkio.org.vikkio.kartazze.ColumnMap
+import org.vikkio.org.vikkio.kartazze.Repository
+import org.vikkio.org.vikkio.kartazze.SchemeHelper
+import org.vikkio.org.vikkio.kartazze.annotations.Id
+import org.vikkio.org.vikkio.kartazze.annotations.Table
+import org.vikkio.org.vikkio.kartazze.columnMapOf
 
 import java.sql.Connection
 import java.sql.DriverManager
@@ -16,18 +20,25 @@ data class User(
 )
 
 class UserRepo(connection: Connection) : Repository<User, String>(connection, User::class) {
-    override fun map(rs: ResultSet) = User(
+    override fun mapResultSetToEntity(rs: ResultSet) = User(
         id = rs.getString("id"),
         name = rs.getString("name"),
         points = rs.getInt("points")
     )
 
-    override fun map(obj: User): ColumnMap {
-        return mapOf(
-            "id" to { index, stm -> stm.setString(index, obj.id) },
-            "name" to { index, stm -> stm.setString(index, obj.name) },
-            "points" to { index, stm -> stm.setInt(index, obj.points) },
+    override fun mapEntityToColumns(obj: User): ColumnMap {
+        return columnMapOf(
+            "id" to { obj.id },
+            "name" to { obj.name },
+            "points" to { obj.points }
         )
+
+        //Or
+//        return mapOf(
+//            "id" to { index, stm -> stm.setString(index, obj.id) },
+//            "name" to { index, stm -> stm.setString(index, obj.name) },
+//            "points" to { index, stm -> stm.setInt(index, obj.points) },
+//        )
     }
 
 }
@@ -36,7 +47,7 @@ fun main() {
     val connection = DriverManager.getConnection("jdbc:sqlite:test.db")
     val userRepo = UserRepo(connection)
 
-    DbHelper.crateTableIfNotExists(connection, User::class)
+    SchemeHelper.crateTableIfNotExists(connection, User::class)
     for (i in 1..10) {
         userRepo.create(User("id-$i", "Mario $i", i))
     }
