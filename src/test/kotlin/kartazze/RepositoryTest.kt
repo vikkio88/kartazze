@@ -3,8 +3,8 @@ package kartazze
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.vikkio.org.vikkio.kartazze.SchemeHelper
-import org.vikkio.org.vikkio.kartazze.filters
+import org.vikkio.kartazze.SchemeHelper
+import org.vikkio.kartazze.filters
 import java.sql.Connection
 import java.sql.DriverManager
 import kotlin.test.assertEquals

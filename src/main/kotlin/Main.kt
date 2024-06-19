@@ -1,11 +1,11 @@
 package org.vikkio
 
-import org.vikkio.org.vikkio.kartazze.ColumnMap
-import org.vikkio.org.vikkio.kartazze.Repository
-import org.vikkio.org.vikkio.kartazze.SchemeHelper
-import org.vikkio.org.vikkio.kartazze.annotations.Id
-import org.vikkio.org.vikkio.kartazze.annotations.Table
-import org.vikkio.org.vikkio.kartazze.columnMapOf
+import org.vikkio.kartazze.ColumnMap
+import org.vikkio.kartazze.Repository
+import org.vikkio.kartazze.SchemeHelper
+import org.vikkio.kartazze.annotations.Id
+import org.vikkio.kartazze.annotations.Table
+import org.vikkio.kartazze.columnMapOf
 
 import java.sql.Connection
 import java.sql.DriverManager

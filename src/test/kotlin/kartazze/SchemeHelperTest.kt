@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.vikkio.org.vikkio.kartazze.SchemeHelper
+import org.vikkio.kartazze.SchemeHelper
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager

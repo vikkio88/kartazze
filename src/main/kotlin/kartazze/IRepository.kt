@@ -1,4 +1,4 @@
-package org.vikkio.org.vikkio.kartazze
+package org.vikkio.kartazze
 
 import java.sql.ResultSet
 

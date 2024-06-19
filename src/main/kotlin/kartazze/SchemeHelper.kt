@@ -1,10 +1,7 @@
-package org.vikkio.org.vikkio.kartazze
+package org.vikkio.kartazze
 
 
-import org.vikkio.org.vikkio.kartazze.annotations.Id
-import org.vikkio.org.vikkio.kartazze.annotations.Ignore
-import org.vikkio.org.vikkio.kartazze.annotations.Table
-import org.vikkio.org.vikkio.kartazze.annotations.Unique
+import org.vikkio.kartazze.annotations.*
 import java.io.InvalidClassException
 import java.sql.Connection
 import java.sql.SQLException

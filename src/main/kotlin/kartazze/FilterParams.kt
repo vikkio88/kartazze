@@ -1,4 +1,4 @@
-package org.vikkio.org.vikkio.kartazze
+package org.vikkio.kartazze
 
 data class FilterParams(
     val pageSize: Int = 100,
