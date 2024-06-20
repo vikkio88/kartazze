@@ -5,70 +5,84 @@ plugins {
     signing
 }
 
+val ossrhToken: String by project
+val ossrhUsername: String by project
+val ossrhPassword: String by project
+
+
 group = "io.github.vikkio88"
-version = "0.0.1"
+//archivesBaseName = "kartazze"
+version = "0.0.2"
+val archiveName = "kartazze"
 
 repositories {
-    maven {
-        name = "centralManualTesting"
-        url = uri("https://central.sonatype.com/api/v1/publisher/deployments/download/")
-        credentials {
-            username = "someusername"
-            password = "somepassword"
-        }
-        authentication {
-            create<BasicAuthentication>("basic")
-        }
-    }
     mavenCentral()
 }
 
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            artifactId = "kartazze"
             from(components["java"])
-            versionMapping {
-                usage("java-api") {
-                    fromResolutionOf("runtimeClasspath")
-                }
-                usage("java-runtime") {
-                    fromResolutionResult()
-                }
-            }
+            artifactId = archiveName
             pom {
-                name = "Kartazze"
-                description = "A little ORM/Query Builder Library"
-                url = "https://github.com/vikkio88/kartazze"
+                name.set("Kartazze")
+                description.set("A little ORM/Query Builder Library")
+                url.set("https://github.com/vikkio88/kartazze")
+
                 licenses {
                     license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
+
                 developers {
                     developer {
-                        id = "vikkio88"
-                        name = "Vincenzo Ciaccio"
-                        email = "vincenzo.ciaccio@gmail.com"
+                        id.set("vikkio88")
+                        name.set("Vincenzo Ciaccio")
+                        email.set("vincenzo.ciaccio@gmail.com")
                     }
                 }
+
                 scm {
-                    connection = "scm:git:git://github.com/vikkio88/kartazze.git"
-                    developerConnection = "scm:git:ssh://github.com/vikkio88/kartazze.git"
-                    url = "https://github.com/vikkio88/kartazze"
+                    connection.set("scm:git:git://github.com/vikkio88/kartazze.git")
+                    developerConnection.set("scm:git:ssh://github.com/vikkio88/kartazze.git")
+                    url.set("https://github.com/vikkio88/kartazze")
                 }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "ossrh"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                HttpHeaderAuthentication { "Bearer $ossrhToken" }
+                username = ossrhUsername
+                password = ossrhPassword
+            }
+        }
+
+
+        maven {
+            name = "ossrhSnapshots"
+            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            credentials {
+                HttpHeaderAuthentication { "Bearer $ossrhToken" }
+                username = ossrhUsername
+                password = ossrhPassword
             }
         }
     }
 }
 
 signing {
-    setRequired {
-        gradle.taskGraph.allTasks.any { it is PublishToMavenRepository }
-    }
-    sign(publishing.publications)
+    sign(publishing.publications["mavenJava"])
 }
+
+// Define the ossrhUsername and ossrhPassword somewhere in your script or in gradle.properties
+
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
