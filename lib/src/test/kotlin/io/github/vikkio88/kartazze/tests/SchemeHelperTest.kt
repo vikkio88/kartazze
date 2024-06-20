@@ -1,10 +1,10 @@
-package org.vikkio
+package io.github.vikkio88.kartazze.tests
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.vikkio.kartazze.SchemeHelper
+import io.github.vikkio88.kartazze.SchemeHelper
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager

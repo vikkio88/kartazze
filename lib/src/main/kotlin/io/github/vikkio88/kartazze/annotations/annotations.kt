@@ -1,4 +1,4 @@
-package org.vikkio.kartazze.annotations
+package io.github.vikkio88.kartazze.annotations
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

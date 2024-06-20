@@ -1,7 +1,12 @@
-package org.vikkio
+package io.github.vikkio88.kartazze.tests
 
-import org.vikkio.kartazze.*
-import org.vikkio.kartazze.annotations.*
+import io.github.vikkio88.kartazze.ColumnMap
+import io.github.vikkio88.kartazze.Repository
+import io.github.vikkio88.kartazze.annotations.Id
+import io.github.vikkio88.kartazze.annotations.Ignore
+import io.github.vikkio88.kartazze.annotations.Table
+import io.github.vikkio88.kartazze.annotations.Unique
+import io.github.vikkio88.kartazze.columnMapOf
 import java.sql.Connection
 import java.sql.ResultSet
 

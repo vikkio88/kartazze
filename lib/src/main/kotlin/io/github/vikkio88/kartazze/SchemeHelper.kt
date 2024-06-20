@@ -1,7 +1,10 @@
-package org.vikkio.kartazze
+package io.github.vikkio88.kartazze
 
 
-import org.vikkio.kartazze.annotations.*
+import io.github.vikkio88.kartazze.annotations.Id
+import io.github.vikkio88.kartazze.annotations.Ignore
+import io.github.vikkio88.kartazze.annotations.Table
+import io.github.vikkio88.kartazze.annotations.Unique
 import java.io.InvalidClassException
 import java.sql.Connection
 import java.sql.SQLException

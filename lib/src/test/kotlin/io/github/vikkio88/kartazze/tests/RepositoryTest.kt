@@ -1,10 +1,10 @@
-package org.vikkio
+package io.github.vikkio88.kartazze.tests
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.vikkio.kartazze.SchemeHelper
-import org.vikkio.kartazze.filters
+import io.github.vikkio88.kartazze.SchemeHelper
+import io.github.vikkio88.kartazze.filters
 import java.sql.Connection
 import java.sql.DriverManager
 import kotlin.test.assertNull

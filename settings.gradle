@@ -11,4 +11,5 @@ plugins {
 }
 
 rootProject.name = 'kartazze'
-include('lib')
+include 'lib','examples'
+
