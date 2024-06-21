@@ -9,11 +9,11 @@ import java.sql.DriverManager
 
 
 fun main() {
-    val conn: Connection = DriverManager.getConnection("jdbc:sqlite::memory:")
+    val conn: Connection = DriverManager.getConnection("jdbc:sqlite:example.test.db")
     SchemeHelper.crateTableIfNotExists(conn, Player::class)
     val p = PlayerRepo(conn)
-
-    p.create(Player("Mario", "Balotelli", Role.STRICKER, 30, 70))
+    p.create(Player("Mario", "Balotelli", Role.STRIKER, 30, 70))
+    p.create(Player("Carlos", "Tevez", Role.STRIKER, 35, 62, "Apache"))
 
     for (r in p.all()) {
         println(r)

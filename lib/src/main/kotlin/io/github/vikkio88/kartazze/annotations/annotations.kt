@@ -1,5 +1,7 @@
 package io.github.vikkio88.kartazze.annotations
 
+import kotlin.reflect.KClass
+
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Table(val name: String)
@@ -10,8 +12,21 @@ annotation class Id
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
+annotation class AutoIncrement
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Unique
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Ignore
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class References(
+    val externalTable: String,
+    val externalColumn: String,
+    val externalIdType: KClass<*>,
+    val columnName: String,
+)

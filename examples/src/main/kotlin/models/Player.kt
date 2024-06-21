@@ -9,6 +9,7 @@ data class Player(
     val role: Role,
     val age: Int,
     val skill: Int,
+    val nickname: String? = null,
     @Id
     val id: String = com.github.f4b6a3.ulid.UlidCreator.getUlid().toString(),
 )
@@ -17,5 +18,5 @@ enum class Role {
     GOALKEEPER,
     DEFENDER,
     MIDFIELDER,
-    STRICKER
+    STRIKER
 }

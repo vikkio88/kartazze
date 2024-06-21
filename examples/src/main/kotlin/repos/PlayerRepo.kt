@@ -13,6 +13,7 @@ class PlayerRepo(connection: Connection) : Repository<Player, String>(connection
         id = rs.getString("id"),
         name = rs.getString("name"),
         surname = rs.getString("surname"),
+        nickname = rs.getString("nickname"),
         role = Role.valueOf(rs.getString("role")),
         skill = rs.getInt("skill"),
         age = rs.getInt("age")
@@ -26,6 +27,7 @@ class PlayerRepo(connection: Connection) : Repository<Player, String>(connection
             "role" to { obj.role.name },
             "age" to { obj.age },
             "skill" to { obj.skill },
+            "nickname" to { obj.nickname }
         )
     }
 }
