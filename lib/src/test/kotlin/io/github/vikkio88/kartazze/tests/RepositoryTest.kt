@@ -3,7 +3,7 @@ package io.github.vikkio88.kartazze.tests
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import io.github.vikkio88.kartazze.SchemeHelper
+import io.github.vikkio88.kartazze.SchemaHelper
 import io.github.vikkio88.kartazze.filters
 import java.sql.Connection
 import java.sql.DriverManager
@@ -16,7 +16,7 @@ class RepositoryTest {
     private val userRepository = UserRepository(testConnection)
 
     init {
-        SchemeHelper.crateTableIfNotExists(testConnection, User::class)
+        SchemaHelper.crateTableIfNotExists(testConnection, User::class)
     }
 
 

@@ -1,6 +1,6 @@
 package org.vikkio
 
-import io.github.vikkio88.kartazze.SchemeHelper
+import io.github.vikkio88.kartazze.SchemaHelper
 import org.vikkio.models.LogEntry
 import org.vikkio.models.Player
 import org.vikkio.models.Role
@@ -12,8 +12,8 @@ import java.sql.DriverManager
 
 fun main() {
     val conn: Connection = DriverManager.getConnection("jdbc:sqlite:example.test.db")
-    SchemeHelper.crateTableIfNotExists(conn, Player::class)
-    SchemeHelper.crateTableIfNotExists(conn, LogEntry::class)
+    SchemaHelper.crateTableIfNotExists(conn, Player::class)
+    SchemaHelper.crateTableIfNotExists(conn, LogEntry::class)
     val p = PlayerRepo(conn)
     p.create(Player("Mario", "Balotelli", Role.STRIKER, 30, 70))
     p.create(Player("Carlos", "Tevez", Role.STRIKER, 35, 62, "Apache"))
@@ -26,7 +26,17 @@ fun main() {
     val l = LogRepo(conn)
     l.create(LogEntry(entry = "test1"))
     l.create(LogEntry(entry = "test2"))
-    for(log in l.all()){
+    for (log in l.all()) {
         println(log)
     }
+
+    l.findOne(1)?.let {
+        val newOne = it.copy(entry = "updated")
+        println("result: ${l.update(newOne, newOne.id)}")
+    }
+    println("After")
+    for (log in l.all()) {
+        println(log)
+    }
+
 }

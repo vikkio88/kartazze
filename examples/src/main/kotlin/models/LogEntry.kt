@@ -9,17 +9,9 @@ data class LogEntry(
     val entry: String,
     @Id
     @AutoIncrement
-    val id: Int,
+    val id: Int = 0,
     @Ignore
-    val createdAt: Timestamp,
+    val createdAt: Timestamp? = null,
     @Ignore
-    val updatedAt: Timestamp
-) {
-
-    constructor(entry: String) : this(
-        entry,
-        0,
-        Timestamp(System.currentTimeMillis()),
-        Timestamp(System.currentTimeMillis())
-    )
-}
+    val updatedAt: Timestamp? = null
+)

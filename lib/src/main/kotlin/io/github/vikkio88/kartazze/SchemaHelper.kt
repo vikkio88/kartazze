@@ -2,15 +2,20 @@ package io.github.vikkio88.kartazze
 
 
 import io.github.vikkio88.kartazze.annotations.*
+import io.github.vikkio88.kartazze.enums.DbType
 import java.io.InvalidClassException
+import java.security.InvalidParameterException
 import java.sql.Connection
 import java.sql.SQLException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
-object SchemeHelper {
+object SchemaHelper {
     fun crateTableIfNotExists(connection: Connection, entityClass: KClass<out Any>): Boolean {
+        // Add different types of column mapping and triggers depending on the db type
+        //val dbtype = getDatabaseType(connection)
+
         val tableName = getTableName(entityClass)
         val columns =
             entityClass.memberProperties.filter { it.findAnnotation<Ignore>() == null }.joinToString(", ") { property ->
@@ -26,9 +31,9 @@ object SchemeHelper {
 
                 val columnType = when (typeToLookup) {
                     String::class -> "VARCHAR(255)"
-                    Int::class -> "INT"
+                    Int::class -> "INTEGER"
                     Boolean::class -> "BOOLEAN"
-                    else -> "VARCHAR(255)"
+                    else -> "TEXT"
                 }
 
                 // Check for @Id
@@ -36,7 +41,7 @@ object SchemeHelper {
                 val primaryKeyClause = if (idAnnotation != null) " PRIMARY KEY" else ""
                 // Check for @AutoIncrement
                 val autoIncrementAnnotation = property.findAnnotation<AutoIncrement>()
-                val autoIncrementConstraint = if (columnType == "INT" && autoIncrementAnnotation != null) {
+                val autoIncrementConstraint = if (columnType == "INTEGER" && autoIncrementAnnotation != null) {
                     " AUTOINCREMENT"
                 } else {
                     ""
@@ -111,5 +116,11 @@ object SchemeHelper {
         val tableName = entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase()
         ?: throw InvalidClassException("Class ${entityClass.simpleName} does not have correct Table configuration")
         return tableName
+    }
+
+    fun getDatabaseType(connection: Connection): DbType {
+        val metaData = connection.metaData
+        return DbType.fromProductName(metaData.databaseProductName)
+            ?: throw InvalidParameterException("Db type '${metaData.databaseProductName}' not supported.")
     }
 }

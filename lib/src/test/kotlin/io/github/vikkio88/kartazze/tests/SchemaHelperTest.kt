@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import io.github.vikkio88.kartazze.SchemeHelper
+import io.github.vikkio88.kartazze.SchemaHelper
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
@@ -12,7 +12,7 @@ import java.sql.DriverManager
 
 const val testFileName = "helpertest.db"
 
-class SchemeHelperTest {
+class SchemaHelperTest {
 
     @Test
     fun crateAndDropTables() {
@@ -20,11 +20,11 @@ class SchemeHelperTest {
             assertFalse(tableExists(connection, "user2"))
         }
         DriverManager.getConnection("jdbc:sqlite:$testFileName").use { connection ->
-            assertTrue(SchemeHelper.crateTableIfNotExists(connection, User2::class))
+            assertTrue(SchemaHelper.crateTableIfNotExists(connection, User2::class))
             assertTrue(tableExists(connection, "user2"))
         }
         DriverManager.getConnection("jdbc:sqlite:$testFileName").use { connection ->
-            assertTrue(SchemeHelper.dropTable(connection, User2::class))
+            assertTrue(SchemaHelper.dropTable(connection, User2::class))
             assertFalse(tableExists(connection, "user2"))
         }
 
