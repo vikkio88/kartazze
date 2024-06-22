@@ -16,7 +16,6 @@ abstract class Repository<EntityType : Any, IdType>(
     private val connection: Connection,
     private val entityClass: KClass<EntityType>
 ) : IRepository<EntityType, IdType> {
-
     val stm: Statement = connection.createStatement()
 
     fun pstm(query: String): PreparedStatement {

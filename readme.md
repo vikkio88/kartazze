@@ -5,6 +5,7 @@ Tried a few, [Exposed](https://github.com/JetBrains/Exposed), [ActiveJDBC](https
 I decided as an experiment to build one myself.
 
 ## TODO
+- [ ] Timestamps
 - [x] OrderBy
 - [x] @Table
 - [x] Truncate

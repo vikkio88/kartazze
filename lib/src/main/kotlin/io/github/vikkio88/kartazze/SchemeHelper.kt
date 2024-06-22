@@ -52,13 +52,19 @@ object SchemeHelper {
                 "$columnName $columnType$primaryKeyClause$uniqueConstraint$autoIncrementConstraint$referencesConstraint$nullableConstraint"
             }
 
+        val timestampsColumns = if (entityClass.findAnnotation<Timestamps>() != null) {
+            ", createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL"
+        } else {
+            ""
+        }
+
         val createTableSQL = """
             CREATE TABLE IF NOT EXISTS $tableName (
-                $columns
+                $columns$timestampsColumns
             );
         """.trimIndent()
 
-        return try {
+        val result = try {
             val statement = connection.createStatement()
             statement.execute(createTableSQL)
             true
@@ -66,6 +72,27 @@ object SchemeHelper {
             println("An error occurred while creating the table: ${e.message}")
             false
         }
+
+        if (result && timestampsColumns.isNotBlank()) {
+            val triggerSQL = """
+                CREATE TRIGGER IF NOT EXISTS ${tableName}_updatedAt
+                AFTER UPDATE ON $tableName
+                FOR EACH ROW
+                BEGIN
+                    UPDATE $tableName SET updatedAt = CURRENT_TIMESTAMP WHERE rowid = NEW.rowid;
+                END;
+            """.trimIndent()
+
+            try {
+                val statement = connection.createStatement()
+                statement.execute(triggerSQL)
+            } catch (e: SQLException) {
+                println("An error occurred while creating the trigger: ${e.message}")
+            }
+        }
+
+        return result
+
     }
 
     fun dropTable(connection: Connection, entityClass: KClass<out Any>): Boolean {
