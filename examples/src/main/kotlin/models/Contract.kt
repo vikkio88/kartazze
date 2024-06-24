@@ -1,13 +1,14 @@
 package org.vikkio.models
 
+import com.github.f4b6a3.ulid.UlidCreator
 import io.github.vikkio88.kartazze.annotations.*
 import java.time.Month
 
-class Contract(
-    @Id
-    val id: String,
+@Table(name = "contracts")
+data class Contract(
     val durationMonths: Int,
     val startYear: Int,
+    @ColumnType(type = Int::class)
     val startMonth: Month,
     val wage: Money,
 
@@ -17,12 +18,16 @@ class Contract(
         externalIdType = String::class,
         columnName = "teamId"
     )
-    val team: Team,
+    val team: Team? = null,
+
+
     @References(
         externalTable = "players",
         externalColumn = "id",
         externalIdType = String::class,
         columnName = "playerId"
     )
-    val player: Player
+    val player: Player? = null,
+    @Id
+    val id: String = UlidCreator.getUlid().toString(),
 )

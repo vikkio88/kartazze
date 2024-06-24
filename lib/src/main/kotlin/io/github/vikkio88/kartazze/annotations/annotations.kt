@@ -28,6 +28,19 @@ annotation class Ignore
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
+annotation class Column(
+    val type: KClass<*>,
+    val name: String,
+)
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ColumnType(
+    val type: KClass<*>
+)
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class References(
     val externalTable: String,
     val externalColumn: String,

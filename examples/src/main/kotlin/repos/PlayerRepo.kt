@@ -1,6 +1,7 @@
 package org.vikkio.repos
 
 import io.github.vikkio88.kartazze.ColumnMap
+import io.github.vikkio88.kartazze.IDataMapper
 import io.github.vikkio88.kartazze.Repository
 import io.github.vikkio88.kartazze.columnMapOf
 import org.vikkio.models.Player
@@ -8,9 +9,14 @@ import org.vikkio.models.Role
 import java.sql.Connection
 import java.sql.ResultSet
 
-class PlayerRepo(connection: Connection) : Repository<Player, String>(connection, Player::class) {
+class PlayerRepo(connection: Connection) :
+    Repository<Player, String>(connection, Player::class, dataMapper = PlayerDataMapper())
+
+class PlayerDataMapper : IDataMapper<Player> {
+    override fun selectColumns() = "players.id as pId, players.*"
+
     override fun mapResultSetToEntity(rs: ResultSet) = Player(
-        id = rs.getString("id"),
+        id = rs.getString("pId"),
         name = rs.getString("name"),
         surname = rs.getString("surname"),
         nickname = rs.getString("nickname"),

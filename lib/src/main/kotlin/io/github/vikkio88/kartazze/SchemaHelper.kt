@@ -29,6 +29,17 @@ object SchemaHelper {
                     " REFERENCES ${it.externalTable}(${it.externalColumn})"
                 } ?: ""
 
+                // Check for @ColumnType
+                property.findAnnotation<ColumnType>()?.let {
+                    typeToLookup = it.type
+                }
+
+                // Check for @Column
+                property.findAnnotation<Column>()?.let {
+                    typeToLookup = it.type
+                    columnName = it.name
+                }
+
                 val columnType = when (typeToLookup) {
                     String::class -> "VARCHAR(255)"
                     Int::class -> "INTEGER"
