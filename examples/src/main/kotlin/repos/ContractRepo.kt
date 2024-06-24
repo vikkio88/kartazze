@@ -10,7 +10,14 @@ import java.sql.ResultSet
 import java.time.Month
 
 class ContractRepo(connection: Connection) :
-    Repository<Contract, String>(connection, Contract::class, ContractMapper())
+    Repository<Contract, String>(connection, Contract::class, ContractMapper()) {
+    fun withTeamAndPlayer(): Repository<Contract, String> {
+        val additionalJoins =
+            "left join players p on p.id = ${table}.playerId left join teams t on t.id = ${table}.teamId"
+        val additionalSelects = "p.id as pId, p.*, t.id as tId, t.name as tName"
+        return this.with(additionalJoins, additionalSelects)
+    }
+}
 
 class ContractMapper : IDataMapper<Contract> {
 

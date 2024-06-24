@@ -22,9 +22,9 @@ abstract class Repository<EntityType : Any, IdType>(
         return connection.prepareStatement(query)
     }
 
-    fun with(): Repository<EntityType, IdType> {
-        additionalSelects = "p.id as pId, p.*"
-        additionalJoins = "left join players p on p.id = ${table}.playerId "
+    fun with(joins: String, selects: String): Repository<EntityType, IdType> {
+        additionalJoins = joins
+        additionalSelects = selects
 
         return this
     }
@@ -38,7 +38,7 @@ abstract class Repository<EntityType : Any, IdType>(
         additionalSelects = null
     }
 
-    private val table: String by lazy {
+    val table: String by lazy {
         entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase() ?: throw InvalidClassException(
             "Class ${entityClass.simpleName} does not have correct Table configuration"
         )

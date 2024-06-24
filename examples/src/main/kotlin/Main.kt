@@ -70,7 +70,7 @@ private fun playersInsert(conn: Connection) {
     }
 
 
-    val resses = c.with().all()
+    val resses = c.withTeamAndPlayer().all()
     for (res in resses)
         println(res)
 //
