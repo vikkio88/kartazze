@@ -16,9 +16,10 @@ class ContractRepo(connection: Connection) :
             Relation(
                 Contract::class,
                 listOf(
-                    Player::class to ("id" to "playerId"),
-                    Team::class to ("tId" to "teamId")
-                )
+                    Player::class to ColMap("id", "playerId"),
+                    Team::class to ColMap("tId", "teamId")
+                ),
+                arrayOf("teams.*", "players.id as pId", "players.*")
             )
         )
     }
@@ -31,7 +32,6 @@ class ContractMapper : IDataMapper<Contract> {
     }
 
     override fun mapResultSetToEntity(rs: ResultSet): Contract {
-
         return Contract(
             id = rs.getString("cId"),
             durationMonths = rs.getInt("durationMonths"),

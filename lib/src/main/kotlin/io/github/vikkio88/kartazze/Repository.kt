@@ -21,7 +21,7 @@ abstract class Repository<EntityType : Any, IdType>(
         return connection.prepareStatement(query)
     }
 
-    fun with(joins: String, selects: String): Repository<EntityType, IdType> {
+    fun join(joins: String, selects: String): Repository<EntityType, IdType> {
         additionalJoins = joins
         additionalSelects = selects
 
@@ -33,10 +33,6 @@ abstract class Repository<EntityType : Any, IdType>(
         additionalSelects = relation.select
 
         return this
-    }
-
-    fun loadFromRelation(externalColumn: String, externalId: String): Iterable<EntityType> {
-        return filter("$externalColumn = ?", externalId)
     }
 
     private fun afterQuery() {
