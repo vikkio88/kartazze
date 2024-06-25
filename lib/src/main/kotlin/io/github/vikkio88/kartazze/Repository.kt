@@ -1,7 +1,6 @@
 package io.github.vikkio88.kartazze
 
 import io.github.vikkio88.kartazze.annotations.Id
-import io.github.vikkio88.kartazze.annotations.Table
 import java.io.InvalidClassException
 import java.sql.*
 import kotlin.reflect.KClass
@@ -29,6 +28,13 @@ abstract class Repository<EntityType : Any, IdType>(
         return this
     }
 
+    fun with(relation: Relation): Repository<EntityType, IdType> {
+        additionalJoins = relation.join
+        additionalSelects = relation.select
+
+        return this
+    }
+
     fun loadFromRelation(externalColumn: String, externalId: String): Iterable<EntityType> {
         return filter("$externalColumn = ?", externalId)
     }
@@ -39,9 +45,7 @@ abstract class Repository<EntityType : Any, IdType>(
     }
 
     val table: String by lazy {
-        entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase() ?: throw InvalidClassException(
-            "Class ${entityClass.simpleName} does not have correct Table configuration"
-        )
+        SchemaHelper.getTableName(entityClass)
     }
 
     private val primaryKey: String by lazy {

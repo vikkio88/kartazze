@@ -1,10 +1,10 @@
 package org.vikkio.repos
 
-import io.github.vikkio88.kartazze.IDataMapper
-import io.github.vikkio88.kartazze.Repository
-import io.github.vikkio88.kartazze.columnMapOf
+import io.github.vikkio88.kartazze.*
 import org.vikkio.libs.JSON
 import org.vikkio.models.Contract
+import org.vikkio.models.Player
+import org.vikkio.models.Team
 import java.sql.Connection
 import java.sql.ResultSet
 import java.time.Month
@@ -12,10 +12,15 @@ import java.time.Month
 class ContractRepo(connection: Connection) :
     Repository<Contract, String>(connection, Contract::class, ContractMapper()) {
     fun withTeamAndPlayer(): Repository<Contract, String> {
-        val additionalJoins =
-            "left join players p on p.id = ${table}.playerId left join teams t on t.id = ${table}.teamId"
-        val additionalSelects = "p.id as pId, p.*, t.id as tId, t.name as tName"
-        return this.with(additionalJoins, additionalSelects)
+        return this.with(
+            Relation(
+                Contract::class,
+                listOf(
+                    Player::class to ("id" to "playerId"),
+                    Team::class to ("tId" to "teamId")
+                )
+            )
+        )
     }
 }
 

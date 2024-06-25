@@ -1,9 +1,6 @@
 package org.vikkio.repos
 
-import io.github.vikkio88.kartazze.ColumnMap
-import io.github.vikkio88.kartazze.IDataMapper
-import io.github.vikkio88.kartazze.Repository
-import io.github.vikkio88.kartazze.columnMapOf
+import io.github.vikkio88.kartazze.*
 import org.vikkio.models.Player
 import org.vikkio.models.Role
 import java.sql.Connection

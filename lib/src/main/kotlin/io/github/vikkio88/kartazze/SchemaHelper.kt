@@ -14,13 +14,14 @@ import kotlin.reflect.full.memberProperties
 object SchemaHelper {
     fun crateTableIfNotExists(connection: Connection, entityClass: KClass<out Any>): Boolean {
         // Add different types of column mapping and triggers depending on the db type
-        //val dbtype = getDatabaseType(connection)
+        //val dbType = getDatabaseType(connection)
 
         val tableName = getTableName(entityClass)
         val columns =
             entityClass.memberProperties.filter { it.findAnnotation<Ignore>() == null }.joinToString(", ") { property ->
                 var columnName = property.name
                 var typeToLookup = property.returnType.classifier
+
                 // Check for @References
                 val referencesAnnotation = property.findAnnotation<References>()
                 val referencesConstraint = referencesAnnotation?.let {
@@ -32,6 +33,10 @@ object SchemaHelper {
                 // Check for @ColumnType
                 property.findAnnotation<ColumnType>()?.let {
                     typeToLookup = it.type
+                }
+                // Check for @ColumnName
+                property.findAnnotation<ColumnName>()?.let {
+                    columnName = it.name
                 }
 
                 // Check for @Column
@@ -123,7 +128,7 @@ object SchemaHelper {
         }
     }
 
-    private fun getTableName(entityClass: KClass<out Any>): String {
+    fun getTableName(entityClass: KClass<out Any>): String {
         val tableName = entityClass.findAnnotation<Table>()?.name ?: entityClass.simpleName?.lowercase()
         ?: throw InvalidClassException("Class ${entityClass.simpleName} does not have correct Table configuration")
         return tableName

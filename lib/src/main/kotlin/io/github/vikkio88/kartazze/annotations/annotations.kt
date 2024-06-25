@@ -41,6 +41,12 @@ annotation class ColumnType(
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
+annotation class ColumnName(
+    val name: String,
+)
+
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class References(
     val externalTable: String,
     val externalColumn: String,
