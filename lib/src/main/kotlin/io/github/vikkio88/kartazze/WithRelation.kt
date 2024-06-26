@@ -1,15 +1,21 @@
 package io.github.vikkio88.kartazze
 
 
+import java.sql.ResultSet
 import kotlin.reflect.KClass
 
-typealias RelationMapping = Iterable<Pair<KClass<out Any>, ColMap>>
+typealias WithRelationMapping = Iterable<Pair<KClass<out Any>, WithColMap>>
 
-data class ColMap(val externalColumn: String, val localColumn: String, val tableAlias: String? = null)
+data class WithColMap(val externalColumn: String, val localColumn: String, val tableAlias: String? = null)
 
-class Relation(
+typealias HasManyRelationMapping = Iterable<Pair<KClass<out Any>, HasColMap>>
+
+data class HasColMap(val externalColumn: String, val localColumn: String, val assignFunction: (Any, ResultSet) -> Unit)
+
+
+class WithRelation(
     private val mainClass: KClass<out Any>,
-    private val models: RelationMapping,
+    private val models: WithRelationMapping,
     private val selects: Array<String>? = null,
 ) {
     val join: String by lazy {
@@ -32,5 +38,8 @@ class Relation(
                 "${c.tableAlias ?: SchemaHelper.getTableName(e)}.*"
             }
     }
-
 }
+
+class HasManyRelation(
+    val models: HasManyRelationMapping
+)

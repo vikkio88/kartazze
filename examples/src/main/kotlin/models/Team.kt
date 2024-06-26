@@ -9,5 +9,8 @@ data class Team(
     val name: String,
     @Id
     @Column(type = String::class, name = "tId")
-    val id: String = UlidCreator.getUlid().toString()
+    val id: String = UlidCreator.getUlid().toString(),
+
+    @Ignore
+    var contracts: Iterable<Contract>? = null
 )

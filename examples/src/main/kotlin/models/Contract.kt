@@ -28,6 +28,8 @@ data class Contract(
         columnName = "playerId"
     )
     val player: Player? = null,
+
     @Id
+    @Column(type = String::class, name = "cId")
     val id: String = UlidCreator.getUlid().toString(),
 )

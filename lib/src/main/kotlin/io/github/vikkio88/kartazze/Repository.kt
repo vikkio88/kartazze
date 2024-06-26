@@ -1,6 +1,6 @@
 package io.github.vikkio88.kartazze
 
-import io.github.vikkio88.kartazze.annotations.Id
+import io.github.vikkio88.kartazze.annotations.*
 import java.io.InvalidClassException
 import java.sql.*
 import kotlin.reflect.KClass
@@ -28,7 +28,7 @@ abstract class Repository<EntityType : Any, IdType>(
         return this
     }
 
-    fun with(relation: Relation): Repository<EntityType, IdType> {
+    fun with(relation: WithRelation): Repository<EntityType, IdType> {
         additionalJoins = relation.join
         additionalSelects = relation.select
 
@@ -46,7 +46,9 @@ abstract class Repository<EntityType : Any, IdType>(
 
     private val primaryKey: String by lazy {
         val keyProperty = entityClass.memberProperties.find { it.findAnnotation<Id>() != null }
-        keyProperty?.name ?: "id"
+        keyProperty?.let { property ->
+            property.findAnnotation<Column>()?.name?.takeIf { it.isNotBlank() } ?: property.name
+        } ?: "id"
     }
 
     private fun selectQ(): String {
@@ -85,6 +87,21 @@ abstract class Repository<EntityType : Any, IdType>(
 
         afterQuery()
         return if (result.next()) mapResultSetToEntity(result) else null
+    }
+
+    fun findOneWith(relations: HasManyRelation, id: IdType): EntityType? {
+        val result = findOne(id) ?: return null
+
+
+        for (p in relations.models) {
+            val (linkedEntity, map) = p
+            val linkedTable = SchemaHelper.getTableName(linkedEntity)
+            val innerResults =
+                stm.executeQuery("select $linkedTable.* from $linkedTable inner join $table on $table.${map.localColumn} = $linkedTable.${map.externalColumn}")
+            map.assignFunction(result, innerResults)
+        }
+
+        return result
     }
 
     override fun all(): Iterable<EntityType> {
@@ -126,6 +143,27 @@ abstract class Repository<EntityType : Any, IdType>(
         while (rs.next()) {
             result.add(mapResultSetToEntity(rs))
         }
+
+        return result
+    }
+
+    fun filterWith(
+        relations: HasManyRelation,
+        whereClause: String,
+        vararg whereParams: Any,
+        filters: FilterParams
+    ): Iterable<EntityType> {
+        val result = filter(whereClause, whereParams, filters = filters)
+
+        if (result.count() < 1) {
+            return result
+        }
+
+//        for (p in relations.models) {
+//            val (r, map) = p
+//            val innerResults = r.filter("${map.externalColumn} = (?)", "")
+//            relations.assignFunction(result, innerResults)
+//        }
 
         return result
     }

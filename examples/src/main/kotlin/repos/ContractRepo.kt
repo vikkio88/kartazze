@@ -13,11 +13,11 @@ class ContractRepo(connection: Connection) :
     Repository<Contract, String>(connection, Contract::class, ContractMapper()) {
     fun withTeamAndPlayer(): Repository<Contract, String> {
         return this.with(
-            Relation(
+            WithRelation(
                 Contract::class,
                 listOf(
-                    Player::class to ColMap("id", "playerId"),
-                    Team::class to ColMap("tId", "teamId")
+                    Player::class to WithColMap("id", "playerId"),
+                    Team::class to WithColMap("tId", "teamId")
                 ),
                 arrayOf("teams.*", "players.id as pId", "players.*")
             )
@@ -26,11 +26,6 @@ class ContractRepo(connection: Connection) :
 }
 
 class ContractMapper : IDataMapper<Contract> {
-
-    override fun selectColumns(): String {
-        return "contracts.id as cId, contracts.*"
-    }
-
     override fun mapResultSetToEntity(rs: ResultSet): Contract {
         return Contract(
             id = rs.getString("cId"),
@@ -38,13 +33,13 @@ class ContractMapper : IDataMapper<Contract> {
             startYear = rs.getInt("startYear"),
             startMonth = Month.of(rs.getInt("startMonth")),
             wage = JSON.parse(rs.getString("wage")),
-            player = if (rs.getString("pId") != null) PlayerDataMapper().mapResultSetToEntity(rs) else null,
-            team = if (rs.getString("tId") != null) TeamMapper().mapResultSetToEntity(rs) else null,
+            player = if (rs.hasColumn("pId")) PlayerDataMapper().mapResultSetToEntity(rs) else null,
+            team = if (rs.hasColumn("tId")) TeamMapper().mapResultSetToEntity(rs) else null,
         )
     }
 
     override fun mapEntityToColumns(obj: Contract) = columnMapOf(
-        "id" to { obj.id },
+        "cId" to { obj.id },
         "durationMonths" to { obj.durationMonths },
         "startYear" to { obj.startYear },
         "startMonth" to { obj.startMonth.value },
