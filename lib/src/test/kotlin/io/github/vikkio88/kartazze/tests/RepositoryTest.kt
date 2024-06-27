@@ -1,15 +1,14 @@
 package io.github.vikkio88.kartazze.tests
 
+import io.github.vikkio88.kartazze.SchemaHelper
+import io.github.vikkio88.kartazze.filters
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import io.github.vikkio88.kartazze.SchemaHelper
-import io.github.vikkio88.kartazze.filters
 import java.sql.Connection
 import java.sql.DriverManager
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-
 
 class RepositoryTest {
     private val testConnection: Connection = DriverManager.getConnection("jdbc:sqlite::memory:")
@@ -17,6 +16,7 @@ class RepositoryTest {
 
     init {
         SchemaHelper.crateTableIfNotExists(testConnection, User::class)
+        SchemaHelper.crateTableIfNotExists(testConnection, Team::class)
     }
 
 
@@ -135,6 +135,13 @@ class RepositoryTest {
         assertEquals(4, userRepository.all().count())
         assertEquals(4, userRepository.deleteWhere("points > ?", 0))
         assertEquals(0, userRepository.all().count())
+    }
+
+
+    @Test
+    fun complexRelationship() {
+        TeamRepository(testConnection)
+
     }
 
 }

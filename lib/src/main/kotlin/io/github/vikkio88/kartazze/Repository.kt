@@ -1,6 +1,8 @@
 package io.github.vikkio88.kartazze
 
-import io.github.vikkio88.kartazze.annotations.*
+import io.github.vikkio88.kartazze.annotations.Column
+import io.github.vikkio88.kartazze.annotations.ColumnName
+import io.github.vikkio88.kartazze.annotations.Id
 import java.io.InvalidClassException
 import java.sql.*
 import kotlin.reflect.KClass
@@ -47,7 +49,9 @@ abstract class Repository<EntityType : Any, IdType>(
     private val primaryKey: String by lazy {
         val keyProperty = entityClass.memberProperties.find { it.findAnnotation<Id>() != null }
         keyProperty?.let { property ->
-            property.findAnnotation<Column>()?.name?.takeIf { it.isNotBlank() } ?: property.name
+            property.findAnnotation<Column>()?.name?.takeIf { it.isNotBlank() }
+                ?: property.findAnnotation<ColumnName>()?.name?.takeIf { it.isNotBlank() }
+                ?: property.name
         } ?: "id"
     }
 
@@ -97,7 +101,7 @@ abstract class Repository<EntityType : Any, IdType>(
             val (linkedEntity, map) = p
             val linkedTable = SchemaHelper.getTableName(linkedEntity)
             val innerResults =
-                stm.executeQuery("select $linkedTable.* from $linkedTable inner join $table on $table.${map.localColumn} = $linkedTable.${map.externalColumn}")
+                stm.executeQuery("select ${map.mapper?.selectColumns() ?: "$linkedTable.*"} from $linkedTable inner join $table on $table.${map.localColumn} = $linkedTable.${map.externalColumn}")
             map.assignFunction(result, innerResults)
         }
 
@@ -143,27 +147,6 @@ abstract class Repository<EntityType : Any, IdType>(
         while (rs.next()) {
             result.add(mapResultSetToEntity(rs))
         }
-
-        return result
-    }
-
-    fun filterWith(
-        relations: HasManyRelation,
-        whereClause: String,
-        vararg whereParams: Any,
-        filters: FilterParams
-    ): Iterable<EntityType> {
-        val result = filter(whereClause, whereParams, filters = filters)
-
-        if (result.count() < 1) {
-            return result
-        }
-
-//        for (p in relations.models) {
-//            val (r, map) = p
-//            val innerResults = r.filter("${map.externalColumn} = (?)", "")
-//            relations.assignFunction(result, innerResults)
-//        }
 
         return result
     }

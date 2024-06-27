@@ -1,10 +1,10 @@
 package io.github.vikkio88.kartazze.tests
 
+import io.github.vikkio88.kartazze.SchemaHelper
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import io.github.vikkio88.kartazze.SchemaHelper
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
@@ -27,7 +27,6 @@ class SchemaHelperTest {
             assertTrue(SchemaHelper.dropTable(connection, User2::class))
             assertFalse(tableExists(connection, "user2"))
         }
-
     }
 
     private fun tableExists(connection: Connection, tableName: String): Boolean {

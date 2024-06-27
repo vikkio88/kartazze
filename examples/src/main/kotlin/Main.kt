@@ -1,14 +1,14 @@
 package org.vikkio
 
-import io.github.vikkio88.kartazze.HasColMap
-import io.github.vikkio88.kartazze.HasManyRelation
 import io.github.vikkio88.kartazze.SchemaHelper
 import org.vikkio.models.*
 import org.vikkio.models.enums.Currency
-import org.vikkio.repos.*
+import org.vikkio.repos.ContractRepo
+import org.vikkio.repos.LogRepo
+import org.vikkio.repos.PlayerRepo
+import org.vikkio.repos.TeamRepo
 import java.sql.Connection
 import java.sql.DriverManager
-import java.sql.ResultSet
 import java.time.Month
 
 
@@ -74,23 +74,7 @@ private fun playersInsert(conn: Connection) {
     for (res in resses)
         println(res)
 
-    val contractMapper = ContractMapper()
-    val cc = t.findOneWith(
-        HasManyRelation(
-            listOf(
-                Contract::class to
-                        HasColMap("teamId", "tId", fun(main: Any, children: ResultSet) {
-                            if (main !is Team) return
-                            val result = mutableListOf<Contract>()
-                            while (children.next()) {
-                                result.add(contractMapper.mapResultSetToEntity(children))
-                            }
-
-                            main.contracts = result
-                        })
-            )
-        ), nt.id
-    )
+    val cc = t.oneWithContracts(nt.id)
 
     println(cc)
 //    t.filterWith(HasManyRelation())

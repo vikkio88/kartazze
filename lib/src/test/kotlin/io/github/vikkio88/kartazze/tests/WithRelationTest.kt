@@ -1,5 +1,7 @@
-package io.github.vikkio88.kartazze
+package io.github.vikkio88.kartazze.tests
 
+import io.github.vikkio88.kartazze.WithColMap
+import io.github.vikkio88.kartazze.WithRelation
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

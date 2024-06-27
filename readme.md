@@ -5,10 +5,12 @@ Tried a few, [Exposed](https://github.com/JetBrains/Exposed), [ActiveJDBC](https
 I decided as an experiment to build one myself.
 
 ## TODO
-- [ ] Timestamps
+- [x] Timestamps
 - [x] OrderBy
 - [x] @Table
 - [x] Truncate
+- [ ] Where in
+- [ ] Multiple Sql Drivers
 
 
 ### Migration
@@ -20,5 +22,7 @@ I decided as an experiment to build one myself.
   - [ ] Rename fields with annotations
 
 ### Complex Operations
-- [ ] Joins
-- [ ] Relationships
+- [x] Joins
+- [x] Relationships
+- [ ] Deeply nested Associations/Fetches
+- [ ] Random Aliasing for columns to avoid conflicts

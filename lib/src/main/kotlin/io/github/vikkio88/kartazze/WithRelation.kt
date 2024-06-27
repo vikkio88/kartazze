@@ -10,7 +10,12 @@ data class WithColMap(val externalColumn: String, val localColumn: String, val t
 
 typealias HasManyRelationMapping = Iterable<Pair<KClass<out Any>, HasColMap>>
 
-data class HasColMap(val externalColumn: String, val localColumn: String, val assignFunction: (Any, ResultSet) -> Unit)
+data class HasColMap(
+    val externalColumn: String,
+    val localColumn: String,
+    val assignFunction: (Any, ResultSet) -> Unit,
+    val mapper: IDataMapper<Any>? = null,
+)
 
 
 class WithRelation(
